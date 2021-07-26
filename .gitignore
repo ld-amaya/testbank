@@ -1,2 +1,4 @@
 node_modules/
 testbank-seed.sql
+testbank.sql
+package-lock.json

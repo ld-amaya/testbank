@@ -90,6 +90,41 @@ class Question{
         const res = await db.query(sqlString, [tid, question, image, a, b, c, d, answer]);
         return (res) ? 'success' : 'failed'
     }
+
+    /** 
+     *  
+     * UPDATE REQUESTS 
+     * 
+     * */
+    
+    /** Update QUESTION */
+    static async update({ question, tid, image = null, a, b, c, d, answer ,id }) {
+        const sqlString = `UPDATE questions SET 
+                                topic_id = $1,
+                                question = $2,
+                                images = $3,
+                                a = $4,
+                                b = $5,
+                                c = $6,
+                                d = $7,
+                                answer = $8
+                            WHERE id = $9`;
+        const res = await db.query(sqlString, [tid, question, image, a, b, c, d, answer,id]);
+        return (res) ? 'updated' : 'failed'
+    }
+
+    /** 
+     *  
+     * DELETE REQUESTS 
+     * 
+     * */
+    
+    /** DELETE QUESTION */
+    static async delete(id) {
+        const sqlString = `DELETE FROM questions WHERE id = $1`
+        const res = await db.query(sqlString, [id]);
+        return (res) ? 'deleted' : 'failed'
+    }
 }
 
 module.exports = Question;

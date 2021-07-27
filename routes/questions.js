@@ -4,6 +4,7 @@ const jsonschema = require('jsonschema');
 const questionSchema = require('../schemas/question-schema.json');
 const Question = require('../models/question');
 const { BadRequestError } = require('../expressError');
+const { route } = require('./users');
 
 
 /** 
@@ -46,23 +47,24 @@ router.get("/:id", async (req, res, next) => {
     } catch (err) {
         return next(err);
     }
-})
+});
 
 /** 
  *  
  * POST ROUTES 
  * Needs to be logged in and a teacher
+ * 
  * */
 
 /** Add question to database */
 
-router.post('/', async (req,res,next) => {
+router.post('/', async (req, res, next) => {
     try {
         /** 
          * Validate format based on question schema 
          * Requires question, topic, choices a, b,c,d and answer
          * Return bad error request if not complete
-         * */ 
+         * */
         const validator = jsonschema.validate(req.body, questionSchema);
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
@@ -70,7 +72,7 @@ router.post('/', async (req,res,next) => {
         }
 
         // Get topic id first, throw badrequesterror if no id
-        let {question, topic, image, a, b,c,d,answer} =  req.body
+        let { question, topic, image, a, b, c, d, answer } = req.body
         const topic_id = await Question.getTopicId(topic);
         if (!topic_id) {
             const errs = validator.errors.map(e => e.stack);
@@ -85,6 +87,65 @@ router.post('/', async (req,res,next) => {
     } catch (err) {
         return next(err);
     }
-})
+});
+
+
+/** 
+ *  
+ * PATCH ROUTES 
+ * Needs to be logged in and a teacher
+ * 
+ **/
+
+/** Update question in database */
+router.patch("/:id", async (req, res, next) => {
+    try {
+        /** 
+         * Validate format based on question schema 
+         * Requires question, topic, choices a, b,c,d and answer
+         * Return bad error request if not complete
+         * */
+        const validator = jsonschema.validate(req.body, questionSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
+        // Get topic id first, throw badrequesterror if no id
+        let { question, topic, image, a, b, c, d, answer } = req.body
+        const topic_id = await Question.getTopicId(topic);
+        if (!topic_id) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
+        // Save to database
+        const tid = +topic_id.id;
+        const id = req.params.id;
+        const result = await Question.update({ question, tid, image, a, b, c, d, answer, id });
+        return res.status(201).json({ result });
+
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** 
+ *  
+ * PATCH ROUTES 
+ * Needs to be logged in and a teacher
+ * 
+ **/
+
+/** Update question in database */
+
+router.delete("/:id", async (req, res, next) => {
+    try {
+        const result = await Question.delete(req.params.id);
+        return res.status(201).json({ result });
+    } catch (err) {
+        return next(err)
+    }
+});
 
 module.exports = router;

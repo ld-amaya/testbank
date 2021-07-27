@@ -1,0 +1,112 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "question": "what is your test?",
+            "topic": "inventories",
+            "image": null,
+            "a": "choice a",
+            "b": "choice b",
+            "c": "choice c",
+            "d": "choice d",
+            "answer": "a"
+        }
+    ],
+    "required": [
+        "question",
+        "topic",
+        "a",
+        "b",
+        "c",
+        "d",
+        "answer"
+    ],
+    "properties": {
+        "question": {
+            "$id": "#/properties/question",
+            "type": "string",
+            "title": "The question schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "what is your test?"
+            ]
+        },
+        "topic": {
+            "$id": "#/properties/topic",
+            "type": "string",
+            "title": "The topic schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "inventories"
+            ]
+        },
+        "image": {
+            "$id": "#/properties/image",
+            "type": "null",
+            "title": "The image schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+                null
+            ]
+        },
+        "a": {
+            "$id": "#/properties/a",
+            "type": "string",
+            "title": "The a schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "choice a"
+            ]
+        },
+        "b": {
+            "$id": "#/properties/b",
+            "type": "string",
+            "title": "The b schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "choice b"
+            ]
+        },
+        "c": {
+            "$id": "#/properties/c",
+            "type": "string",
+            "title": "The c schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "choice c"
+            ]
+        },
+        "d": {
+            "$id": "#/properties/d",
+            "type": "string",
+            "title": "The d schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "choice d"
+            ]
+        },
+        "answer": {
+            "$id": "#/properties/answer",
+            "type": "string",
+            "title": "The answer schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "a"
+            ]
+        }
+    },
+    "additionalProperties": true
+}

@@ -37,7 +37,7 @@ class Question{
     static async getTopicId(topic) {
         const sqlString = `SELECT id FROM topics WHERE topic = $1`;
         const topic_id = await db.query(sqlString, [topic]);
-        return topic_id.rows[0];
+        return topic_id.rows[0]
     }
 
     /** Retrieve one question based on id */
@@ -67,28 +67,14 @@ class Question{
      * */
     
     /** ADD QUESTION */
-    static async addQuestion({ question, tid, image = null, a, b, c, d, answer }) {
+    static async addQuestion(tid, question, image = null, a, b, c, d, answer) {
         const sqlString = `INSERT INTO 
-                            questions (
-                                topic_id,
-                                question,
-                                images,
-                                a,
-                                b,
-                                c,
-                                d,
-                                answer)
-                            VALUES(
-                                $1,
-                                $2,
-                                $3,
-                                $4,
-                                $5,
-                                $6,
-                                $7,
-                                $8)`;
-        const res = await db.query(sqlString, [tid, question, image, a, b, c, d, answer]);
-        return (res) ? 'success' : 'failed'
+                            questions (topic_id,question,images,a,b,c,d,answer)
+                            VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+                            RETURNING topic_id,question,images,a,b,c,d,answer`;
+        const topic_id = +tid;
+        const res = await db.query(sqlString, [topic_id, question, image, a, b, c, d, answer]);
+        return (res) ? res.rows[0] : 'failed'
     }
 
     /** 
@@ -108,9 +94,10 @@ class Question{
                                 c = $6,
                                 d = $7,
                                 answer = $8
-                            WHERE id = $9`;
+                            WHERE id = $9
+                            RETURNING topic_id,question,images,a,b,c,d,answer`;
         const res = await db.query(sqlString, [tid, question, image, a, b, c, d, answer,id]);
-        return (res) ? 'updated' : 'failed'
+        return (res) ? res.rows[0] : 'failed'
     }
 
     /** 

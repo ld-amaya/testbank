@@ -71,7 +71,7 @@ class Question{
         const sqlString = `INSERT INTO 
                             questions (topic_id,question,images,a,b,c,d,answer)
                             VALUES($1,$2,$3,$4,$5,$6,$7,$8)
-                            RETURNING topic_id,question,images,a,b,c,d,answer`;
+                            RETURNING id,topic_id,question,images,a,b,c,d,answer`;
         const topic_id = +tid;
         const res = await db.query(sqlString, [topic_id, question, image, a, b, c, d, answer]);
         return (res) ? res.rows[0] : 'failed'
@@ -95,7 +95,7 @@ class Question{
                                 d = $7,
                                 answer = $8
                             WHERE id = $9
-                            RETURNING topic_id,question,images,a,b,c,d,answer`;
+                            RETURNING id,topic_id,question,images,a,b,c,d,answer`;
         const res = await db.query(sqlString, [tid, question, image, a, b, c, d, answer,id]);
         return (res) ? res.rows[0] : 'failed'
     }

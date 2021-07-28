@@ -25,12 +25,12 @@ router.get("/", async (req, res, next) => {
 });
 
 /** Get all questions based on topic */
-router.get("/:topic", async (req, res, next) => {
+router.get("/t/:topic", async (req, res, next) => {
     try {
         // Get topic id first, throw badrequesterror if no id
         const topic_id = await Question.getTopicId(req.params.topic);
-        if (!topic_id) {
-            throw new BadRequestError(errs);
+        if (!topic_id) {   
+            throw new BadRequestError();
         }
         const questions = await Question.getAll(topic_id.id);
         return res.status(201).json({ questions });
@@ -40,7 +40,7 @@ router.get("/:topic", async (req, res, next) => {
 });
 
 /** Get one question */
-router.get("/:id", async (req, res, next) => {
+router.get("/q/:id", async (req, res, next) => {
     try {
         const question = await Question.get(req.params.id);
         return res.status(201).json({ question });
@@ -75,15 +75,13 @@ router.post('/', async (req, res, next) => {
         let { question, topic, image, a, b, c, d, answer } = req.body
         const topic_id = await Question.getTopicId(topic);
         if (!topic_id) {
-            const errs = validator.errors.map(e => e.stack);
-            throw new BadRequestError(errs);
+            throw new BadRequestError();
         }
 
         // Save to database
         const tid = +topic_id.id;
-        const result = await Question.addQuestion({ question, tid, image, a, b, c, d, answer });
-        return res.status(201).json({ result });
-
+        const result = await Question.addQuestion(tid, question, image, a, b, c, d, answer);
+        return res.status(201).json({ question: result });
     } catch (err) {
         return next(err);
     }
@@ -115,15 +113,14 @@ router.patch("/:id", async (req, res, next) => {
         let { question, topic, image, a, b, c, d, answer } = req.body
         const topic_id = await Question.getTopicId(topic);
         if (!topic_id) {
-            const errs = validator.errors.map(e => e.stack);
-            throw new BadRequestError(errs);
+            throw new BadRequestError();
         }
 
         // Save to database
         const tid = +topic_id.id;
         const id = req.params.id;
         const result = await Question.update({ question, tid, image, a, b, c, d, answer, id });
-        return res.status(201).json({ result });
+        return res.status(201).json({ question: result });
 
     } catch (err) {
         return next(err);

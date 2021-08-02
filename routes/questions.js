@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jsonschema = require('jsonschema');
-const questionSchema = require('../schemas/question-schema.json');
+const questionSchema = require('../schemas/questionSchema.json');
 const Question = require('../models/question');
 const { BadRequestError } = require('../expressError');
 const { route } = require('./users');

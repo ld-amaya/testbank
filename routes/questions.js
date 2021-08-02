@@ -80,7 +80,7 @@ router.post('/', async (req, res, next) => {
 
         // Save to database
         const tid = +topic_id.id;
-        const result = await Question.addQuestion(tid, question, image, a, b, c, d, answer);
+        const result = await Question.addQuestion({tid, question, image, a, b, c, d, answer});
         return res.status(201).json({ question: result });
     } catch (err) {
         return next(err);
@@ -113,6 +113,12 @@ router.patch("/:id", async (req, res, next) => {
         let { question, topic, image, a, b, c, d, answer } = req.body
         const topic_id = await Question.getTopicId(topic);
         if (!topic_id) {
+            throw new BadRequestError();
+        }
+
+        // Get question id if existing
+        const qid = await Question.get(req.params.id);
+        if (!qid) {
             throw new BadRequestError();
         }
 

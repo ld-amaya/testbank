@@ -1,10 +1,25 @@
 const db = require("../db");
 const Bcrypt = require("bcrypt");
 
-const { BadRequestError } = require("../expressError");
+const { BadRequestError, UnauthorizedError } = require("../expressError");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 class User{
+    static async authenticate({ username, password }) {
+        let sqlString = `SELECT username, password, first_name, last_name, email, is_teacher FROM users WHERE username = $1`;
+        let res = await db.query(sqlString, [username]);
+        const user = res.rows[0];
+        if (user) {
+            const isValid = await Bcrypt.compare(password, user.password);
+            if (isValid) {
+                delete user.password    // Delete user.password before rerturning user
+                return user;
+            }
+        }
+        throw new UnauthorizedError("Username and password does not match");
+    }
+
+    /** New User registration */
     static async register({ username, password, first_name, last_name, email, is_teacher }) {
         //Check if user name exists, return error if true
         let sqlString = `SELECT username FROM users WHERE username = $1`;

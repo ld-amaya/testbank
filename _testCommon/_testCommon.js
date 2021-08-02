@@ -1,5 +1,7 @@
 const db = require("../db");
+const tid=[];
 const qid = [];
+
 
 async function commonBeforeAll() {
     await db.query("DELETE FROM questions");
@@ -9,14 +11,14 @@ async function commonBeforeAll() {
     INSERT INTO topics (topic) VALUES ('testTopic')
     RETURNING id`);
 
-    const tid = +(topicId.rows[0].id);
-    
+    tid.push(+(topicId.rows[0].id))
     let res = await db.query(`INSERT INTO questions (topic_id, question, images, a, b, c, d, answer)
-                    VALUES (${tid},'question 1?',null,'a','b','c','d','a')
+                    VALUES (${tid[0]},'question 1?',null,'a','b','c','d','a')
                     RETURNING id`);
-    qid.push(res.rows[0].id)
+    qid.push(res.rows[0].id);
+
     res =await db.query(`INSERT INTO questions (topic_id, question, images, a, b, c, d, answer)
-                    VALUES (${tid},'question 2?',null,'d','c','b','a','d')
+                    VALUES (${tid[0]},'question 2?',null,'d','c','b','a','d')
                     RETURNING id`);
     qid.push(res.rows[0].id);
 }
@@ -38,5 +40,6 @@ module.exports = {
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
-    qid
+    qid,
+    tid
 }

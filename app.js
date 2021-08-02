@@ -2,6 +2,7 @@ const express = require('express');
 const {NotFoundError} = require('./expressError')
 
 /** Add routes */
+const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const questionsRoutes = require('./routes/questions');
 
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 
 /** Create server routes */
+app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/questions', questionsRoutes);
 

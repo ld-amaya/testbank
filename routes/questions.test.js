@@ -1,5 +1,4 @@
 const request = require("supertest");
-const { response } = require("../app");
 const app = require("../app");
 
 const {
@@ -8,7 +7,7 @@ const {
     commonAfterEach,
     commonAfterAll,
     qid
-} = require("./_testCommon");
+} = require("../_testCommon/_testCommon");
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -106,6 +105,7 @@ describe("POST /questions", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual({
             question: {
+                id: expect.any(Number),
                 topic_id: expect.any(Number),
                 question: 'question add?',
                 images: null,
@@ -138,6 +138,7 @@ describe('PATCH /:id', () => {
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual({
             question: {
+                id: expect.any(Number),
                 topic_id: expect.any(Number),
                 question: 'question revised?',
                 images: null,

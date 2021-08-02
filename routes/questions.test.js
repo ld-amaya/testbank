@@ -1,12 +1,14 @@
 const request = require("supertest");
 const app = require("../app");
+const { BadRequestError } = require("../expressError");
 
 const {
     commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
-    qid
+    qid,
+    tid
 } = require("../_testCommon/_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -98,6 +100,16 @@ describe("POST /questions", () => {
         d: 'c',
         answer: 'b'
     }
+    let wrongData = {
+        topic: 'wrongTopic',
+        question: 'question add?',
+        images: null,
+        a: 'b',
+        b: 'a',
+        c: 'd',
+        d: 'c',
+        answer: 'b'
+    }
     test('Add new question', async () => {
         let res = await request(app)
             .post(`/questions`)
@@ -117,6 +129,16 @@ describe("POST /questions", () => {
             }
         });
     });
+
+    test('Return bad request for wrong schema or data type', async () => {
+        try {
+            await request(app)
+                .post('/questions')
+                .send(wrongData);
+        } catch (err) {
+            expect(err instanceof BadRequestError).toBeTruthy();
+        }
+    })
 });
 
 /** PATCH ROUTES */
@@ -149,6 +171,13 @@ describe('PATCH /:id', () => {
                 answer: 'd'
             }
         })
+    });
+
+    test("return bad requst if wrong id", async () => {
+        const res = await request(app)
+            .patch(`/questions/0`)
+            .send(data);
+        expect(res.statusCode).toBe(400);
     })
 })
 

@@ -1,5 +1,5 @@
 const db = require('../db');
-const { NotFoundError } = require('../expressError');
+const { NotFoundError, BadRequestError } = require('../expressError');
 
 class Question{
     /** 
@@ -37,6 +37,9 @@ class Question{
     static async getTopicId(topic) {
         const sqlString = `SELECT id FROM topics WHERE topic = $1`;
         const topic_id = await db.query(sqlString, [topic]);
+        if (topic_id.rows.length <= 0) {
+            throw new BadRequestError(`${topic} not found`);
+        }
         return topic_id.rows[0]
     }
 
@@ -56,8 +59,12 @@ class Question{
         JOIN topics as t
         ON t.id = q.topic_id
         WHERE q.id = $1`
-        const question = await db.query(sqlString,[id]);
-        return question.rows;
+        const question = await db.query(sqlString, [id]);
+        if (question.rows.length <= 0) {
+            throw new BadRequestError('Question id not found');
+        }
+        return question.rows; 
+        
     }
 
     /** 
@@ -67,7 +74,7 @@ class Question{
      * */
     
     /** ADD QUESTION */
-    static async addQuestion(tid, question, image = null, a, b, c, d, answer) {
+    static async addQuestion({tid, question, image = null, a, b, c, d, answer}) {
         const sqlString = `INSERT INTO 
                             questions (topic_id,question,images,a,b,c,d,answer)
                             VALUES($1,$2,$3,$4,$5,$6,$7,$8)

@@ -1,7 +1,7 @@
 "use strict"
 
 const express = require("express");
-const User = require('../models/User');
+const Auth = require('../models/auth');
 const jsonschema = require('jsonschema');
 const newUserSchema = require('../schemas/newUserSchema.json');
 const userLoginSchema = require('../schemas/userLoginSchema.json');
@@ -19,8 +19,8 @@ router.post('/login', async (req, res, next) => {
             throw new BadRequestError(errs);
         }
         // Verify user credentials in database
-        const user = await User.authenticate(req.body);
-        //Create token for the user
+        const user = await Auth.authenticate(req.body);
+        // Create token for the user
         const token = createToken(user);
         return res.json({ token });
     } catch (err) {
@@ -37,8 +37,8 @@ router.post('/register', async (req, res, next) => {
             throw new BadRequestError(errs);
         }
         // Add user to database
-        const newUser = await User.register({ ...req.body });
-        //Create token for the user
+        const newUser = await Auth.register({ ...req.body });
+        // Create token for the user
         const token = createToken(newUser);
         return res.json({ token });
     } catch (err) {

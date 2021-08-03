@@ -1,4 +1,5 @@
 const db = require("../db");
+const { createToken } = require("../helpers/token");
 const tid=[];
 const qid = [];
 
@@ -34,12 +35,30 @@ async function commonAfterEach() {
 async function commonAfterAll() {
     await db.end();
 }
+// Create dummy users
+const studentToken = createToken(
+    {
+        username: "student",
+        first_name: "stud",
+        last_name: "ent",
+        email:"student@email.com",
+        is_teacher: false
+    });
+const teacherToken = createToken({
+        username: "teacher",
+        first_name: "teach",
+        last_name: "er",
+        email:"teacher@email.com",
+        is_teacher: true
+    });
 
 module.exports = {
     commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
+    teacherToken,
+    studentToken,
     qid,
     tid
 }

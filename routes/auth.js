@@ -22,7 +22,7 @@ router.post('/login', async (req, res, next) => {
         const user = await Auth.authenticate(req.body);
         // Create token for the user
         const token = createToken(user);
-        return res.json({ token });
+        return res.status(201).json({ token });
     } catch (err) {
         return next(err);
     }
@@ -33,16 +33,17 @@ router.post('/register', async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, newUserSchema);
         if (!validator.valid) {
-            const errs = validator.errs.map(e => e.stack);
+            const errs = validator.errors.map(e => e.stack);
             throw new BadRequestError(errs);
         }
         // Add user to database
         const newUser = await Auth.register({ ...req.body });
         // Create token for the user
         const token = createToken(newUser);
-        return res.json({ token });
+        return res.status(201).json({ token });
     } catch (err) {
         return next(err);
     }
-})
+});
+
 module.exports = router;

@@ -8,18 +8,16 @@ const { ensureUserLoggedIn, ensureUserIsTeacher } = require('../middleware/auth'
 
 
 /** 
- *  
  * GET ROUTES 
  * Needs to be logged in
- * 
  * */
 
 /** 
  * Get all questions 
  * This is only accessible for the teachers
  * Ensure only teacher has access
- * 
  * */
+
 router.get("/",ensureUserIsTeacher, async (req, res, next) => {
     try {
         const questions = await Question.getAll()
@@ -33,7 +31,7 @@ router.get("/",ensureUserIsTeacher, async (req, res, next) => {
  * Get all questions based on topic 
  * This is only accessible for the teachers
  * Ensure only teacher has access
-*/
+ * */
 router.get("/t/:topic", ensureUserIsTeacher, async (req, res, next) => {
     try {
         // Get topic id first, throw badrequesterror if no id
@@ -53,7 +51,7 @@ router.get("/t/:topic", ensureUserIsTeacher, async (req, res, next) => {
  * Get one question 
  * Any student can access
  * 
-*/
+ * */
 router.get("/q/:id", ensureUserLoggedIn, async (req, res, next) => {
     try {
         const question = await Question.get(req.params.id);
@@ -110,7 +108,7 @@ router.post('/',ensureUserIsTeacher, async (req, res, next) => {
  * PATCH ROUTES 
  * Needs to be logged in and a teacher
  * 
- **/
+ * */
 
 /** Update question in database */
 router.patch("/:id",ensureUserIsTeacher, async (req, res, next) => {
@@ -151,11 +149,9 @@ router.patch("/:id",ensureUserIsTeacher, async (req, res, next) => {
 });
 
 /** 
- *  
  * DELETE ROUTES 
  * Needs to be logged in and a teacher
- * 
- **/
+ * */
 
 /** Delete question in database */
 

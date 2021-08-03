@@ -4,7 +4,7 @@ const jsonschema = require('jsonschema');
 const questionSchema = require('../schemas/questionSchema.json');
 const Question = require('../models/question');
 const { BadRequestError } = require('../expressError');
-const { route } = require('./users');
+const { ensureUserLoggedIn, ensureUserIsTeacher } = require('../middleware/auth')
 
 
 /** 
@@ -14,8 +14,13 @@ const { route } = require('./users');
  * 
  * */
 
-/** Get all questions */
-router.get("/", async (req, res, next) => {
+/** 
+ * Get all questions 
+ * This is only accessible for the teachers
+ * Ensure only teacher has access
+ * 
+ * */
+router.get("/",ensureUserIsTeacher, async (req, res, next) => {
     try {
         const questions = await Question.getAll()
         return res.status(201).json({ questions });
@@ -24,8 +29,12 @@ router.get("/", async (req, res, next) => {
    }
 });
 
-/** Get all questions based on topic */
-router.get("/t/:topic", async (req, res, next) => {
+/** 
+ * Get all questions based on topic 
+ * This is only accessible for the teachers
+ * Ensure only teacher has access
+*/
+router.get("/t/:topic", ensureUserIsTeacher, async (req, res, next) => {
     try {
         // Get topic id first, throw badrequesterror if no id
         const topic_id = await Question.getTopicId(req.params.topic);
@@ -39,8 +48,13 @@ router.get("/t/:topic", async (req, res, next) => {
    }
 });
 
-/** Get one question */
-router.get("/q/:id", async (req, res, next) => {
+/** 
+ * 
+ * Get one question 
+ * Any student can access
+ * 
+*/
+router.get("/q/:id", ensureUserLoggedIn, async (req, res, next) => {
     try {
         const question = await Question.get(req.params.id);
         return res.status(201).json({ question });
@@ -56,9 +70,12 @@ router.get("/q/:id", async (req, res, next) => {
  * 
  * */
 
-/** Add question to database */
+/** 
+ * Add question to database 
+ * Only Accessible to teachers
+ * */
 
-router.post('/', async (req, res, next) => {
+router.post('/',ensureUserIsTeacher, async (req, res, next) => {
     try {
         /** 
          * Validate format based on question schema 
@@ -96,7 +113,7 @@ router.post('/', async (req, res, next) => {
  **/
 
 /** Update question in database */
-router.patch("/:id", async (req, res, next) => {
+router.patch("/:id",ensureUserIsTeacher, async (req, res, next) => {
     try {
         /** 
          * Validate format based on question schema 
@@ -135,14 +152,14 @@ router.patch("/:id", async (req, res, next) => {
 
 /** 
  *  
- * PATCH ROUTES 
+ * DELETE ROUTES 
  * Needs to be logged in and a teacher
  * 
  **/
 
-/** Update question in database */
+/** Delete question in database */
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id",ensureUserIsTeacher, async (req, res, next) => {
     try {
         const result = await Question.delete(req.params.id);
         return res.status(201).json({ result });

@@ -1,6 +1,9 @@
 const express = require('express');
 const {NotFoundError} = require('./expressError')
 
+/** Add JWT Authencitaction */
+const { authenticateJWT } = require("./middleware/auth");
+
 /** Add routes */
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
@@ -11,11 +14,17 @@ const app = express();
 /** Allow json format */
 app.use(express.json());
 
-/** Create server routes */
+/** Verify authentication if present */
+app.use(authenticateJWT);
+
+/** Use server routes */
 app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/questions', questionsRoutes);
 
+
+
+/** Get aut */
 /** Handle page not found for invalid route */
 app.use((req, res, next) => {
     return next(new NotFoundError());

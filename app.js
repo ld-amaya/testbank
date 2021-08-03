@@ -22,8 +22,6 @@ app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/questions', questionsRoutes);
 
-
-
 /** Get aut */
 /** Handle page not found for invalid route */
 app.use((req, res, next) => {
@@ -39,4 +37,5 @@ app.use((err,req, res, next) => {
         error: { message, status }
     });
 });
+
 module.exports = app;

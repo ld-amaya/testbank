@@ -7,6 +7,8 @@ const {
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
+    studentToken,
+    teacherToken,
     qid,
     tid
 } = require("../_testCommon/_testCommon");
@@ -47,18 +49,24 @@ describe("GET /questions", function () {
     }
     
     test("works", async () => {
-        let res = await request(app).get("/questions");
+        let res = await request(app)
+            .get("/questions")
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toEqual(201);
         expect(res.body).toEqual(data)
     });
     
     test("works with filtering per topic", async () => {
-        let res = await request(app).get(`/questions/t/testTopic`);
+        let res = await request(app)
+            .get(`/questions/t/testTopic`)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(201);
     });
 
     test("works with filtering per question", async () => {
-        let res = await request(app).get(`/questions/q/${qid[0]}`);
+        let res = await request(app)
+            .get(`/questions/q/${qid[0]}`)
+            .set("authorization", `Bearer ${studentToken}`);
         expect(res.statusCode).toEqual(201);
         expect(res.body).toEqual({
             question: [
@@ -78,14 +86,24 @@ describe("GET /questions", function () {
     });
 
     test("404 Error", async () => {
-        let res = await request(app).get(`/question`);
+        let res = await request(app)
+            .get(`/question`)
+            .set("authorization", `Bearer ${teacherToken}`);;
         expect(res.statusCode).toBe(404);
-    })
+    });
 
     test('400 bad request error', async () => {
-        let res = await request(app).get(`/questions/t/random`);
+        let res = await request(app)
+            .get(`/questions/t/random`)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(400);
-    })
+    });
+
+    test('401 Unauthorized access error', async () => {
+        let res = await request(app)
+            .get(`/questions/t/random`);
+        expect(res.statusCode).toBe(401);
+    });
 });
 
 /** POST ROUTES */
@@ -113,7 +131,8 @@ describe("POST /questions", () => {
     test('Add new question', async () => {
         let res = await request(app)
             .post(`/questions`)
-            .send(data);
+            .send(data)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual({
             question: {
@@ -134,11 +153,18 @@ describe("POST /questions", () => {
         try {
             await request(app)
                 .post('/questions')
-                .send(wrongData);
+                .send(wrongData)
+                .set("authorization", `Bearer ${teacherToken}`);
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
         }
-    })
+    });
+
+    test('401 Unauthorized access error', async () => {
+        let res = await request(app)
+            .get(`/questions/t/random`);
+        expect(res.statusCode).toBe(401);
+    });
 });
 
 /** PATCH ROUTES */
@@ -156,7 +182,8 @@ describe('PATCH /:id', () => {
     test("should udpate question", async () => {
         const res = await request(app)
             .patch(`/questions/${qid[1]}`)
-            .send(data);
+            .send(data)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual({
             question: {
@@ -176,18 +203,29 @@ describe('PATCH /:id', () => {
     test("return bad requst if wrong id", async () => {
         const res = await request(app)
             .patch(`/questions/0`)
-            .send(data);
+            .send(data)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(400);
-    })
+    });
+
+    test('401 Unauthorized access error', async () => {
+        let res = await request(app)
+            .get(`/questions/t/random`);
+        expect(res.statusCode).toBe(401);
+    });
 })
 
 /** DELETE ROUTES */
 describe('DELETE /:id', () => {
     test("should delete question", async () => {
-        let res = await request(app).delete(`/questions/${qid[1]}`);
+        let res = await request(app)
+            .delete(`/questions/${qid[1]}`)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(201);
     
-        res = await request(app).get(`/questions`);
+        res = await request(app)
+            .get(`/questions`)
+            .set("authorization", `Bearer ${teacherToken}`);
         expect(res.statusCode).toBe(201);
         expect(res.body).toEqual({
             questions: [{
@@ -202,5 +240,10 @@ describe('DELETE /:id', () => {
                 answer: 'a'
             }]
         })
-    })
+    });
+    test('401 Unauthorized access error', async () => {
+        let res = await request(app)
+            .get(`/questions/t/random`);
+        expect(res.statusCode).toBe(401);
+    });
 })

@@ -4,7 +4,10 @@ const jsonschema = require('jsonschema');
 const questionSchema = require('../schemas/questionSchema.json');
 const Question = require('../models/question');
 const { BadRequestError } = require('../expressError');
-const { ensureUserLoggedIn, ensureUserIsTeacher } = require('../middleware/auth')
+const {
+    ensureUserLoggedIn,
+    ensureUserIsTeacher
+} = require('../middleware/auth')
 
 
 /** 

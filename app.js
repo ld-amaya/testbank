@@ -8,6 +8,8 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const questionsRoutes = require('./routes/questions');
+const topicRoutes = require("./routes/topics");
+const examRoutes = require("./routes/exam");
 
 const app = express();
 
@@ -21,8 +23,10 @@ app.use(authenticateJWT);
 app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/questions', questionsRoutes);
+app.use('/exam', examRoutes);
+app.use('/topics', topicRoutes);
 
-/** Get aut */
+
 /** Handle page not found for invalid route */
 app.use((req, res, next) => {
     return next(new NotFoundError());

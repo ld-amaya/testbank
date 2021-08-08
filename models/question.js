@@ -23,7 +23,8 @@ class Question{
         q.answer
         FROM questions as q
         JOIN topics as t
-        ON t.id = q.topic_id`
+        ON t.id = q.topic_id
+        ORDER BY q.id`
         if (topic) {
             sqlString += ` WHERE q.topic_id = $1`;
             questions = await db.query(sqlString, [topic]);

@@ -47,10 +47,20 @@ function ensureUserIsTeacher(req, res, next) {
         return next(err);
     }
 }
+function ensureCorrectUserLogged(req, res, next) {
+    try {
+        // Check if the same user name
+        if (res.locals.user.username === req.params.username || res.locals.user.is_teacher) return next();
+        throw new UnauthorizedError();
+    } catch (err) {
+        return next(err);
+    }
+}
 
 module.exports = {
     authenticateJWT,
     ensureUserLoggedIn,
-    ensureUserIsTeacher
+    ensureUserIsTeacher,
+    ensureCorrectUserLogged
 };
 

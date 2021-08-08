@@ -25,7 +25,7 @@ class Topic{
         return res.rows[0]
     }
 
-    static async edit({id,topic}) {
+    static async edit(id,topic) {
         const sqlString = `UPDATE topics SET 
                         topic = $1
                         WHERE id =  $2

@@ -3,6 +3,7 @@ const router = express.Router();
 const jsonschema = require('jsonschema');
 const questionSchema = require('../schemas/questionSchema.json');
 const Question = require('../models/question');
+const checkSchema = require("../helpers/checkSchema");
 const { BadRequestError } = require('../expressError');
 const {
     ensureUserLoggedIn,
@@ -83,12 +84,8 @@ router.post('/',ensureUserIsTeacher, async (req, res, next) => {
          * Requires question, topic, choices a, b,c,d and answer
          * Return bad error request if not complete
          * */
-        const validator = jsonschema.validate(req.body, questionSchema);
-        if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
-            throw new BadRequestError(errs);
-        }
-
+        checkSchema(req.body, questionSchema, BadRequestError);
+        
         // Get topic id first, throw badrequesterror if no id
         let { question, topic, image, a, b, c, d, answer } = req.body
         const topic_id = await Question.getTopicId(topic);
@@ -121,12 +118,8 @@ router.patch("/:id",ensureUserIsTeacher, async (req, res, next) => {
          * Requires question, topic, choices a, b,c,d and answer
          * Return bad error request if not complete
          * */
-        const validator = jsonschema.validate(req.body, questionSchema);
-        if (!validator.valid) {
-            const errs = validator.errors.map(e => e.stack);
-            throw new BadRequestError(errs);
-        }
-
+        checkSchema(req.body, questionSchema, BadRequestError);
+       
         // Get topic id first, throw badrequesterror if no id
         let { question, topic, image, a, b, c, d, answer } = req.body
         const topic_id = await Question.getTopicId(topic);

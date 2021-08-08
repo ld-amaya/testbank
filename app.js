@@ -10,6 +10,7 @@ const usersRoutes = require('./routes/users');
 const questionsRoutes = require('./routes/questions');
 const topicRoutes = require("./routes/topics");
 const examRoutes = require("./routes/exam");
+const summaryRoutes = require("./routes/summaries");
 
 const app = express();
 
@@ -25,7 +26,7 @@ app.use('/users', usersRoutes);
 app.use('/questions', questionsRoutes);
 app.use('/exam', examRoutes);
 app.use('/topics', topicRoutes);
-
+app.use('/summary', summaryRoutes);
 
 /** Handle page not found for invalid route */
 app.use((req, res, next) => {

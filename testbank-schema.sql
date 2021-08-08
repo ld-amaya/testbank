@@ -30,10 +30,13 @@ CREATE TABLE "testsummary" (
   "id" SERIAL PRIMARY KEY,
   "user_id" INTEGER NOT NULL
     REFERENCES users ON DELETE CASCADE,
-  "start" DATE,
-  "end" DATE,
+  "topic_id" INTEGER
+  "start" TIMESTAMP
+    DEFAULT NOW(),
+  "endExam" TIMESTAMP,
   "score" int,
   "is_done" boolean NOT NULL
+    DEFAULT false
 );
 
 CREATE TABLE "test" (
@@ -50,6 +53,8 @@ CREATE TABLE "test" (
   "c" TEXT NOT NULL,
   "d" TEXT NOT NULL,
   "answer" TEXT,
-  "is_correct" boolean NOT NULL,
+  "is_correct" boolean NOT NULL
+    DEFAULT false,
   "done" boolean NOT NULL
+    DEFAULT false
 );

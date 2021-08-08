@@ -1,13 +1,12 @@
 "use strict"
 
 const express = require("express");
-const Topic = require("../models/topic");
 
+const topicSchema = require("../schemas/topicSchema.json");
+const Topic = require("../models/topic");
+const checkSchema = require("../helpers/checkSchema");
+const { BadRequestError } = require("../expressError")
 const router = express.Router();
-const {
-    BadRequestError,
-    UnauthorizedError
-} = require("../expressError");
 const {
     ensureUserLoggedIn,
     ensureUserIsTeacher
@@ -19,12 +18,12 @@ const {
  */
 router.get("/", ensureUserLoggedIn, async (req, res, next) => {
     const topic = await Topic.get();
-    return res.status(201).json({ topic });
+    return res.status(200).json({ topic });
 });
 
 router.get("/:id", ensureUserLoggedIn, async (req, res, next) => {
     const topic = await Topic.get(req.params.id);
-    return res.status(201).json({ topic });
+    return res.status(200).json({ topic });
 })
 
 /**
@@ -32,8 +31,14 @@ router.get("/:id", ensureUserLoggedIn, async (req, res, next) => {
  * Only Accessible of you are a teacher
  */
 router.post("/", ensureUserIsTeacher, async (req, res, next) => {
-    const topic = await Topic.add(req.body);
-    return res.status(201).json({ topic });
+    try {
+        checkSchema(req.body, topicSchema);
+        const topic = await Topic.add(req.body);
+        return res.status(200).json({ topic });    
+    } catch (err) {
+        return next(err);
+    }
+    
 });
 
 /**
@@ -41,8 +46,14 @@ router.post("/", ensureUserIsTeacher, async (req, res, next) => {
  * Only Accessible of you are a teacher
  */
 router.patch("/:id", ensureUserIsTeacher, async (req, res, next) => {
-    const topic = await Topic.edit(req.body);
-    return res.status(201).json({ topic });
+    try {
+        checkSchema(req.body, topicSchema);
+        const topic = await Topic.edit(req.params.id, req.body.topic);
+        return res.status(200).json({ topic });    
+    } catch (err) {
+        return next(err);
+    }
+    
 })
 
 /**
@@ -51,7 +62,7 @@ router.patch("/:id", ensureUserIsTeacher, async (req, res, next) => {
  */
 router.delete("/:id", ensureUserIsTeacher, async (req, res, next) => {
     const topic = await Topic.delete(req.params.id);
-    return res.json({ result: topic });
+    return res.status(200).json({ result: topic });
 })
 
 module.exports = router;

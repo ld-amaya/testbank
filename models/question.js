@@ -1,5 +1,5 @@
 const db = require('../db');
-const { NotFoundError, BadRequestError } = require('../expressError');
+const { BadRequestError } = require('../expressError');
 
 class Question{
     /** 

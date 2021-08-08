@@ -1,6 +1,4 @@
 "use strict"
-
-const { rawListeners } = require("../app");
 const db = require("../db")
 
 class Topic{

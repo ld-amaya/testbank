@@ -8,7 +8,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 
 class User{
     static async authenticate({ username, password }) {
-        let sqlString = `SELECT username, password, first_name, last_name, email, is_teacher FROM users WHERE username = $1`;
+        let sqlString = `SELECT id, username, password, first_name, last_name, email, is_teacher FROM users WHERE username = $1`;
         let res = await db.query(sqlString, [username]);
         const user = res.rows[0];
         if (user) {
@@ -44,7 +44,7 @@ class User{
                         is_teacher
                     )
                     VALUES ($1,$2,$3,$4,$5,$6)
-                    RETURNING username, first_name, last_name, email, is_teacher`;
+                    RETURNING id, username, first_name, last_name, email, is_teacher`;
         const register = await db.query(sqlString,
             [
                 username,

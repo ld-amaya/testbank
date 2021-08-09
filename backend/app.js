@@ -1,4 +1,6 @@
 const express = require('express');
+const cors = require('cors');
+
 const {NotFoundError} = require('./expressError')
 
 /** Add JWT Authencitaction */
@@ -13,6 +15,9 @@ const examRoutes = require("./routes/exam");
 const summaryRoutes = require("./routes/summaries");
 
 const app = express();
+
+/** add Cross origin resource sharing */
+app.use(cors());
 
 /** Allow json format */
 app.use(express.json());

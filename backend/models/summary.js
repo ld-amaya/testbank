@@ -4,10 +4,12 @@ const { BadRequestError } = require("../expressError");
 class Summary{
 
     static async get() {
-        const sqlString = `SELECT s.start, s.endExam, s.score, t.topic
+        const sqlString = `SELECT u.first_name, u.last_name , s.id, s.start, s.endExam, s.score, s.is_done, t.topic
                         FROM testsummary as s
                         JOIN topics as t
-                        ON t.id = s.topic_id`;
+                        ON t.id = s.topic_id
+                        JOIN users as u
+                        ON s.user_id = u.id`;
         const res = await db.query(sqlString);
         return res.rows
     }

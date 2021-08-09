@@ -21,6 +21,7 @@ router.get("/", ensureUserLoggedIn, async (req, res, next) => {
     return res.status(200).json({ topic });
 });
 
+/** Get topic based on id */
 router.get("/:id", ensureUserLoggedIn, async (req, res, next) => {
     const topic = await Topic.get(req.params.id);
     return res.status(200).json({ topic });

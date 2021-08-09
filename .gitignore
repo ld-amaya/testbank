@@ -4,3 +4,4 @@ testbank-seed.sql
 testbank.sql
 package-lock.json
 static
+fontend/node_modules

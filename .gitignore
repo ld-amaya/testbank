@@ -4,5 +4,4 @@ backend/testbank-seed.sql
 backend/testbank.sql
 backend/package-lock.json
 static
-frontend/node_modules
-frontend/package-lock.json
+frontend

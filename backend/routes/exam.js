@@ -15,7 +15,6 @@ const {
  * Should return question, choices, image
  * */
 router.get("/student/:username/exam/:examId/:num", ensureCorrectUserLogged, async (req, res, next) => {
-    console.log('hi lou');
     const { examId, num } = req.params
     const question = await Exam.get(examId, num);
     res.status(200).json({ question });
@@ -29,8 +28,8 @@ router.get("/student/:username/exam/:examId/:num", ensureCorrectUserLogged, asyn
 router.post("/student/:username/topic/:topic", ensureCorrectUserLogged, async (req, res, next) => {
     try {
         const userID = res.locals.user.id
-        const questions = await Exam.create(req.params.topic,userID);
-        res.status(201).json({questions})    
+        const id = await Exam.create(req.params.topic,userID);
+        res.status(201).json({exam_id:id})    
     } catch (err) {
         return next(err);
     }

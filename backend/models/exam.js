@@ -6,7 +6,7 @@ const { UnauthorizedError } = require("../expressError");
 class Exam{
 
     static async get(examId, num) {
-        const sqlString = `SELECT q.question,q.images, q.a, q.b, q.c, q.d, t.answer as your_answer
+        const sqlString = `SELECT q.question,q.images, q.a, q.b, q.c, q.d, t.answer as your_answer, t.is_correct
                 FROM questions as q
                 JOIN test as t
                 ON q.id =t.question_id
@@ -63,7 +63,7 @@ class Exam{
                     questions[i].d
                 ]);
         }
-        return questions;
+        return test_id;
     }
 
     static async save(examId, num, answer) {

@@ -46,6 +46,7 @@ class Question{
 
     /** Retrieve one question based on id */
     static async get(id) {
+        console.log('id', id);
         const sqlString = `SELECT 
         q.id,
         t.topic,

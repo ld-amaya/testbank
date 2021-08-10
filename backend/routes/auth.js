@@ -14,9 +14,9 @@ const router = express.Router();
 /** User login */
 router.post('/login', async (req, res, next) => {
     try {
-        await checkSchema(req.body, userLoginSchema);
+        await checkSchema(req.body.data, userLoginSchema);
         // Verify user credentials in database
-        const user = await Auth.authenticate(req.body);
+        const user = await Auth.authenticate(req.body.data);
         // Create token for the user
         const token = createToken(user);
         return res.status(201).json({ token });
@@ -28,9 +28,9 @@ router.post('/login', async (req, res, next) => {
 /** New user registration */
 router.post('/register', async (req, res, next) => {
     try {
-        await checkSchema(req.body, newUserSchema);
+        await checkSchema(req.body.data, newUserSchema);
         // Add user to database
-        const newUser = await Auth.register({ ...req.body });
+        const newUser = await Auth.register({ ...req.body.data });
         // Create token for the user
         const token = createToken(newUser);
         return res.status(201).json({ token });

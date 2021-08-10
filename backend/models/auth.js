@@ -22,7 +22,7 @@ class User{
     }
 
     /** New User registration */
-    static async register({ username, password, first_name, last_name, email, is_teacher }) {
+    static async register({ username, password, first_name, last_name, email, is_teacher =false }) {
         //Check if user name exists, return error if true
         let sqlString = `SELECT username FROM users WHERE username = $1`;
         const checkDuplicateUsername = await db.query(sqlString, [username]);

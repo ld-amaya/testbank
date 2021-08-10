@@ -36,7 +36,7 @@ router.get("/",ensureUserIsTeacher, async (req, res, next) => {
  * This is only accessible for the teachers
  * Ensure only teacher has access
  * */
-router.get("/t/:topic", ensureUserIsTeacher, async (req, res, next) => {
+router.get("/topic/:topic", ensureUserIsTeacher, async (req, res, next) => {
     try {
         // Get topic id first, throw badrequesterror if no id
         const topic_id = await Question.getTopicId(req.params.topic);
@@ -56,7 +56,7 @@ router.get("/t/:topic", ensureUserIsTeacher, async (req, res, next) => {
  * Any student can access
  * 
  * */
-router.get("/q/:id", ensureUserLoggedIn, async (req, res, next) => {
+router.get("/:id", ensureUserLoggedIn, async (req, res, next) => {
     try {
         const question = await Question.get(req.params.id);
         return res.status(201).json({ question });
@@ -84,10 +84,10 @@ router.post('/',ensureUserIsTeacher, async (req, res, next) => {
          * Requires question, topic, choices a, b,c,d and answer
          * Return bad error request if not complete
          * */
-        await checkSchema(req.body, questionSchema, BadRequestError);
+        await checkSchema(req.body.data, questionSchema, BadRequestError);
         
         // Get topic id first, throw badrequesterror if no id
-        let { question, topic, image, a, b, c, d, answer } = req.body
+        let { question, topic, image, a, b, c, d, answer } = req.body.data
         const topic_id = await Question.getTopicId(topic);
         if (!topic_id) {
             throw new BadRequestError();
@@ -111,18 +111,18 @@ router.post('/',ensureUserIsTeacher, async (req, res, next) => {
  * */
 
 /** Update question in database */
-router.patch("/:id",ensureUserIsTeacher, async (req, res, next) => {
+router.patch("/:id", ensureUserIsTeacher, async (req, res, next) => {
     try {
         /** 
          * Validate format based on question schema 
          * Requires question, topic, choices a, b,c,d and answer
          * Return bad error request if not complete
          * */
-        checkSchema(req.body, questionSchema, BadRequestError);
+        checkSchema(req.body.data, questionSchema, BadRequestError);
        
         // Get topic id first, throw badrequesterror if no id
-        let { question, topic, image, a, b, c, d, answer } = req.body
-        const topic_id = await Question.getTopicId(topic);
+        let { question, topic, image, a, b, c, d, answer } = req.body.data
+        const topic_id = await Question.getTopicId(topic.toLowerCase());
         if (!topic_id) {
             throw new BadRequestError();
         }
